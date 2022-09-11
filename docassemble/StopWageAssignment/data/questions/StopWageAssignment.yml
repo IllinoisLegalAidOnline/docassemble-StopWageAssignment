@@ -1,0 +1,554 @@
+metadata:
+  title: Stop wage assignment
+  short title: Stop wage assignment
+  comment: This program makes a Revocation Notice to stop a creditor from taking money out of your paycheck.
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.ALToolbox:phone-number-validation.yml
+  - docassemble.ILAO:ilao-interview-framework.yml
+  - docassemble.ILAO:shared-basic-questions.yml
+---
+objects:
+  - user: ALIndividual
+  - creditor: ALIndividual
+  - employer: ALIndividual
+  - contact: ALIndividual
+---
+sections:
+  - review_answers: Review your answers
+---
+# interview order block
+mandatory: True
+code: |
+  ilao_easy_form_title = "Stop wage assignment"
+  ilao_easy_form_url = "https://www.illinoislegalaid.org/legal-information/stop-wage-assignment-letter"
+  sees_nav_bar
+  set_progress(5)
+  how_to_use
+  whats_next
+  accept_terms
+  get_legal_help 
+  if in_illinois == False:
+    out_of_state
+  if included_debt == False:
+    no_assignment
+  set_progress(20)
+  creditor.name.first  
+  creditor.address.address
+  creditor.account_number
+  set_progress(40) 
+  creditor.assignment_date
+  creditor.mail_date
+  set_progress(60)
+  employer.name.first
+  employer.address.address
+  if payroll_known == False:
+    if supervisor_known == True:
+      contact.name.first
+  else:
+    contact.name.first
+  employer.mail_date 
+  user.name.first
+  set_progress(80)
+  user.address.address
+  if include_phone_number == True:
+    user.phone_number
+  if include_email_address == True:
+    user.email
+  if add_signature == True:
+    user.signature
+  set_progress(100)
+  get_docs_screen 
+---
+id: welcome
+question: |
+  Stop wage assignment
+subquestion: |
+  Welcome to Illinois Legal Aid Online's **Stop wage assignment** Easy Form.
+
+  This program makes notices for a creditor and your employer to stop a creditor from taking money out of your paycheck. This will end a **{wage assignment}**.
+  
+  Learn about [**how wage assignments work**](https://www.illinoislegalaid.org/legal-information/understanding-wage-assignment).
+field: sees_nav_bar
+terms:
+  phrases:
+      - 'wage assignment'
+  definition: |
+    An agreement between you and a creditor that allows the creditor to take money from your paycheck to cover your debt.
+---
+id: instructions
+continue button field: how_to_use
+question: |
+  Instructions
+subquestion: |  
+  To use this program you will need to know:
+
+  * Your account number, another account reference listed on your bill, or a way to clearly identify yourself to the creditor,
+  * Your creditor's name and address, and
+  * Your employer's name and address.
+
+  Set aside 5 to 10 minutes to finish this program. You can log in and save your work to return to later. 
+  
+  ${ collapse_template(help_example) }  
+
+  Click on **{green words}** to learn what they mean. Some questions have a question mark in a circle ${ fa_icon("question-circle", color_css="#0DCAF0" ) } that also gives help.
+---
+template: help_example
+
+subject: |
+
+  **You can expand sections like this to show more information.**
+
+content: |  
+
+  This is an example of help. Click again to hide.
+---
+id: whats next
+continue button field: whats_next
+question: |
+  After you finish this program
+subquestion: |
+  After you download your notices, you must deliver the Revocation Notice to both your creditor and your employer. You also must deliver the Employer Notice to your employer.
+
+  To learn more, download and read the instructions at the end of this program.
+---
+id: accept terms
+question: |
+  Terms of use
+subquestion: |
+  This program does not provide legal advice. It does not take the place of advice from a lawyer.
+
+  Using this program does not create an attorney-client relationship between you and Illinois Legal Aid Online or its employees.
+
+  ${ collapse_template(get_legal_help) }  
+
+fields:
+  - To continue, you must accept the [**terms of use**](https://www.illinoislegalaid.org/about/terms-of-use).: accept
+    datatype: checkboxes
+    none of the above: False
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.
+continue button field: accept_terms
+---
+template: get_legal_help
+subject: |
+  **What if I need legal advice?**
+content: |  
+  If you have questions or concerns about your legal problem and want legal advice you should talk to a lawyer.
+ 
+  Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+---
+id: your name
+question: |
+  What is your name?
+fields:
+  - First: user.name.first
+  - Middle: user.name.middle
+    required: False
+  - Last: user.name.last
+---
+id: live in illinois
+question: |
+  Do you currently live in Illinois?
+fields:
+  - no label: in_illinois
+    datatype: yesnoradio
+---
+id: out of state
+event: out_of_state
+question: |
+  Sorry
+subquestion: |
+  You must live in Illinois to use this program.
+  
+  If you do not live in Illinois, use [**this website**](https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help) to find a legal aid organization near you.
+buttons:
+  - Exit: exit
+  - Restart: restart
+---
+id: assignment
+question: |
+  Do you have a wage assignment for a debt other than child support, federal student loans, or taxes?
+subquestion: | 
+  Child support, federal student loans, and taxes are treated differently than other wage assignments. You may want to discuss your issue with a lawyer. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+  
+  ${ collapse_template(explain_assignment) }  
+fields:
+  - no label: included_debt
+    datatype: yesnoradio
+---
+template: explain_assignment
+subject: |
+  **What is a wage assignment?**
+content: |
+  A wage assignment is a document you sign when you take out a loan. It gives the lender permission to take money from your wages if you don't pay.
+  
+  Usually, a creditor has to go to court to take part of your wages. This is called wage garnishment. However, with a wage assignment, a creditor can take your wages without going to court.
+  
+  Learn more about [**how wage assignments work**](https://www.illinoislegalaid.org/legal-information/understanding-wage-assignment).
+---
+id: no wage assignment
+event: no_assignment
+question: |
+  You do not qualify.
+subquestion: |
+  In order to revoke a wage assignment using this program, you must first have a wage assignment for a debt other than child support, taxes or federal student loans. You said that you do not have such a wage assignment.
+  
+  Child support, taxes, and federal student loans are treated differently than other wage assignments. You may want to discuss your issue with a lawyer. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+buttons:
+  - Exit: exit
+  - Restart: restart
+---
+id: your address
+question: |
+  What is your mailing address?
+fields:
+  - Street address: user.address.address
+    address autocomplete: True
+  - Address line 2: user.address.unit
+    required: False
+  - City: user.address.city
+  - State: user.address.state
+    code: |
+      states_list() 
+  - ZIP code: user.address.zip
+---
+id: include phone
+question: |
+  Do you want to include your phone number in your notices?
+fields:
+  - no label: include_phone_number
+    datatype: yesnoradio
+---
+id: your phone
+question: |
+  What is your phone number?
+fields:
+  - Phone number: user.phone_number
+    datatype: al_international_phone
+---
+id: include email
+question: |
+  Do you want to include your email address in your notices?
+fields:
+  - no label: include_email_address
+    datatype: yesnoradio
+---
+id: your email
+question: |
+  What is your email address?
+fields: 
+  - Email: user.email
+    datatype: email
+---
+sets:
+  - creditor.name.first
+id: creditor name
+question: |
+  What is the name of the creditor?
+fields:
+  - code: |
+      creditor.name_fields(person_or_business='unsure')
+---
+id: creditor address
+question: |
+  What is ${creditor.name.full(middle="full")}'s mailing address?
+subquestion: |
+  The creditor’s address should be listed on the wage assignment. If not, look for their address on another notice or bill they sent you.
+fields:
+  - Street address: creditor.address.address
+    address autocomplete: True
+  - Address line 2: creditor.address.unit
+    required: False
+  - City: creditor.address.city
+  - State: creditor.address.state
+    code: |
+      states_list() 
+  - ZIP code: creditor.address.zip
+---
+id: creditor account
+question: |
+  What is your account number with ${creditor.name.full(middle="full")}?
+subquestion: |
+  Your account number or other account reference is usually listed on bills you receive for the account.
+fields:
+  - Account number: creditor.account_number
+---
+id: assignment date
+question: |
+  When did you sign your wage assignment with ${creditor.name.full(middle="full")}?
+subquestion: |
+  This date should be on your copy of the wage assignment. If you do not have a copy, you should request a copy from ${creditor.name.full(middle="full")}. 
+  
+  Wage assignments can be part of a rental contract, a loan agreement, or a sales contract with payment by installments. Read any contract you have with the creditor carefully.
+fields:
+  - Wage assignment date: creditor.assignment_date
+    datatype: date
+    max: ${ today() }
+---
+id: creditor mail date
+question: |
+  When will you mail your notice to ${creditor.name.full(middle="full")}?
+subquestion: |
+  This date will appear on your notice.
+fields:
+  - Date: creditor.mail_date
+    datatype: date
+    min: ${ today() }
+---
+sets:
+  - employer.name.first
+id: employer name
+question: |
+  What is the name of your employer?
+subquestion: |
+  This program needs your employer's information for two reasons:
+  
+  * A copy of this Revocation Notice should be sent to your employer in order to make sure your employer has notification that you are revoking your wage assignment, and
+  
+  * Your creditor needs your employer's information so they know who to contact regarding the revocation of your wage assignment.
+fields: 
+  - code: |
+      employer.name_fields(person_or_business='unsure')
+---
+id: employer address
+question: |
+  What is ${employer.name.full(middle="full")}'s address?
+fields:
+  - Street address: employer.address.address
+    address autocomplete: True
+  - Address line 2: employer.address.unit
+    required: False
+  - City: employer.address.city
+  - State: employer.address.state
+    code: |
+      states_list() 
+  - ZIP code: employer.address.zip
+---
+id: payroll check
+question: |
+  Do you know who is in charge of payroll at ${employer.name.full(middle='full')}?
+subquestion: |
+  This could be the Office Manager or someone from the Human Resources department.
+fields:
+  - no label: payroll_known
+    datatype: yesnoradio
+---
+id: supervisor known
+question: |
+  Do you know the name of your supervisor at ${employer.name.full(middle='full')}?
+fields:
+  - no label: supervisor_known
+    datatype: yesnoradio
+---
+id: contact person
+question: |
+  % if payroll_known == True:
+  What is the name of the person in charge of payroll at ${employer.name.full(middle='full')}?
+  % else:
+  What is the name of your supervisor at ${employer.name.full(middle='full')}?
+  % endif
+fields:
+  - First: contact.name.first
+  - Middle: contact.name.middle
+    required: False
+  - Last: contact.name.last
+---
+id: employer mail date
+question: |
+  When will you mail your notice to ${employer.name.full(middle="full")}?
+subquestion: |
+  This date will appear on your notice.
+  
+  You said you would mail your notice to ${creditor.name.full(middle="full")} on ${creditor.mail_date}.
+fields:
+  - Date: employer.mail_date
+    datatype: date
+    default: ${ creditor.mail_date.format("yyyy-MM-dd") }
+    min: ${ today() }
+---
+id: add signature
+question: |
+  Do you want to add your signature to the notices now?
+subquestion: |
+  If you do not add your signature, you will have to sign your notices by hand.
+fields:
+  - no label: add_signature
+    datatype: yesnoradio
+---
+id: signature
+question: |
+  Sign your name
+subquestion: |
+  Use the mouse or touchpad on your computer or sign with your finger on your phone.
+signature: user.signature
+under: |
+  ${ user.name.full(middle='full') }
+---
+id: get docs screen
+event: get_docs_screen
+question: |
+  Download
+subquestion: |
+  Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
+  
+  Read the instructions to learn what to do next.
+
+  Thank you for using ILAO Easy Forms!
+  
+  ${ action_button_html(url_action('review_answers'), label=':edit: Make changes', color='success', size="md") }
+
+  ${ al_user_bundle.download_list_html() }
+ 
+  &nbsp;
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+  
+  **Note:** This program does not send your notices. You will need to do this yourself.
+
+  Thank you for using ILAO Easy Forms!
+under: |
+  % if not user_logged_in():
+  [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} **Sign-in**](${url_of('login', next=interview_url())}) or [**create**](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
+  % endif
+
+ 
+  ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
+#buttons:
+  #- Exit: exit
+---
+generic object: ALDocumentBundle
+template: x.send_email_template
+subject: |
+  Letter to stop wage assignment
+content: |
+  Your forms are attached.
+  
+  Thanks for using ILAO Easy Forms!
+  
+  [**Illinois Legal Aid Online**](https://www.illinoislegalaid.org)
+---
+attachment:
+  name: Stop wage assignment revocation notice to creditor
+  variable name: creditor_notice[i]
+  filename: notice_to_creditor
+  docx template file: Stop_wage_assignment_letter_to_creditor.docx
+---
+attachment:
+  name: Stop wage assignment notice to employer
+  variable name: employer_notice[i]
+  filename: notice_to_employer
+  docx template file: Stop_wage_assignment_letter_to_employer.docx
+---
+attachment:
+  name: Stop wage assignment instructions
+  variable name: instructions[i]
+  filename: instructions
+  docx template file: Stop_wage_assignment_instructions.docx
+---
+objects:
+  - creditor_notice: ALDocument.using(title="Notice to creditor", filename="creditor_notice", enabled=True, has_addendum=False)
+  - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
+  - employer_notice: ALDocument.using(title="Notice to employer", filename="employer_notice", enabled=True, has_addendum=False)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[instructions, creditor_notice, employer_notice], filename="stop_wage_assignment.pdf", title="Download all forms")
+---
+id: review screen
+event: review_answers
+question: |
+  Review screen
+subquestion: |
+  Edit your answers below.
+review: 
+  - Edit: creditor.name.first
+    button: |
+      **Creditor's name:**
+      ${creditor.name.full(middle='full')}
+  - Edit: creditor.address.address
+    button: |
+      **Creditor's address:**
+      ${creditor.address.on_one_line(bare=True)}
+  - Edit: creditor.account_number
+    button: |
+      **Your account number:**
+       ${creditor.account_number}
+  - Edit: creditor.assignment_date
+    button: |
+      **Wage assignment signature date:**
+      ${creditor.assignment_date}
+  - Edit: creditor.mail_date
+    button: |
+      **The date you will mail the Revocation Notice to your creditor:**
+      ${creditor.mail_date}
+  - Edit: employer.name.first
+    button: |
+      **Your employer's name:**
+      ${employer.name.full(middle="full")}
+  - Edit: employer.address.address
+    button: |
+      **Your employer's address:**
+      ${employer.address.on_one_line(bare=True)}
+  - Edit: payroll_known
+    button: |
+      **Do you know who is in charge of payroll at ${employer.name.full(middle="full")}?**
+      ${word(yesno(payroll_known))}
+  - Edit: supervisor_known
+    button: |
+      **Do you know the name of your supervisor at ${employer.name.full(middle="full")}?**
+      ${word(yesno(supervisor_known))}
+    show if: payroll_known == False
+  - Edit: contact.name.first
+    button: |
+      % if payroll_known == True:
+      **The name of the person in charge of payroll:**
+      % else:
+      **Your supervisor's name:**
+      % endif
+      ${contact.name.full(middle='full')}
+    show if: payroll_known == True or supervisor_known == True
+  - Edit: employer.mail_date
+    button: |
+      **The date you will mail the notices to your employer:**
+      ${employer.mail_date}
+  - Edit: user.name.first
+    button: |
+      **Your name:**
+      ${user.name.full(middle="full")}
+  - Edit: user.address.address
+    button: |
+      **Your address:**
+      ${user.address.on_one_line(bare=True)}
+  - Edit: include_phone_number
+    button: |
+      **Do you want to include your phone number in the notices?** 
+      ${word(yesno(include_phone_number)) }
+  - Edit: user.phone_number
+    button: |
+      **Your phone number:**
+      ${phone_number_formatted(user.phone_number)}
+    show if: include_phone_number
+  - Edit: include_email_address
+    button: |
+      **Do you want to include your e-mail address in the notices?** 
+      ${word(yesno(include_email_address)) }
+  - Edit: user.email
+    button: |
+      **Your e-mail address:**
+      ${user.email}
+    show if: include_email_address
+  - Edit: add_signature
+    button: |
+      **Do you want to add an electronic signature?**
+      ${word(yesno(add_signature))}
+  - Edit: user.signature
+    button: |
+      **Signature:**
+      
+      ${ user.signature }
+    show if: add_signature
