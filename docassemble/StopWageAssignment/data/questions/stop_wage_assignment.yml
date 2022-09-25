@@ -2,6 +2,9 @@ metadata:
   title: Stop wage assignment
   short title: Stop wage assignment
   comment: This program makes a Revocation Notice to stop a creditor from taking money out of your paycheck.
+  authors:
+    - Vivian McNaughton
+    - Matt Newsted
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
@@ -35,8 +38,8 @@ code: |
   sees_nav_bar
   set_progress(5)
   how_to_use
-  whats_next
   accept_terms
+  whats_next
   get_legal_help 
   if in_illinois == False:
     out_of_state
@@ -120,9 +123,16 @@ content: |
 id: whats next
 continue button field: whats_next
 question: |
-  After you finish this program
+  Stopping a wage assignment
 subquestion: |
-  After you download your notices, you must deliver the Revocation Notice to both your creditor and your employer. You also must deliver the Employer Notice to your employer.
+  To stop a wage assignment, you need to tell your creditor that you are revoking it. You also need to tell your employer.
+  
+  This program will make two notices:
+  
+  * A Revocation Notice telling your creditor you want to stop the wage assignment, and
+  * An Employer Notice that tells your employer to stop paying your creditor directly from your paycheck.
+  
+  After you download your notices, you must deliver the Revocation Notice to your creditor and both notices to your employer.
 
   To learn more, download and read the instructions at the end of this program.
 ---
@@ -208,7 +218,7 @@ content: |
 id: no wage assignment
 event: no_assignment
 question: |
-  You do not qualify.
+  Sorry
 subquestion: |
   In order to revoke a wage assignment using this program, you must first have a wage assignment for a debt other than child support, taxes or federal student loans. You said that you do not have such a wage assignment.
   
@@ -308,7 +318,7 @@ id: creditor mail date
 question: |
   When will you mail your notice to ${creditor.name.full(middle="full")}?
 subquestion: |
-  This date will appear on your notice.
+  This date will appear on your Revocation Notice.
 fields:
   - Date: creditor.mail_date
     datatype: date
@@ -322,7 +332,7 @@ question: |
 subquestion: |
   This program needs your employer's information for two reasons:
   
-  * A copy of this Revocation Notice should be sent to your employer in order to make sure your employer has notification that you are revoking your wage assignment, and
+  * A copy of the Revocation Notice should be sent to your employer to make sure they know that you are revoking your wage assignment, and
   
   * Your creditor needs your employer's information so they know who to contact regarding the revocation of your wage assignment.
 fields: 
@@ -374,11 +384,11 @@ fields:
 ---
 id: employer mail date
 question: |
-  When will you mail your notice to ${employer.name.full(middle="full")}?
+  When will you mail your Employer Notice to ${employer.name.full(middle="full")}?
 subquestion: |
   This date will appear on your notice.
   
-  You said you would mail your notice to ${creditor.name.full(middle="full")} on ${creditor.mail_date}.
+  You said you would mail your Revocation Notice to ${employer.name.full(middle="full")} on ${creditor.mail_date}.
 fields:
   - Date: employer.mail_date
     datatype: date
@@ -438,7 +448,7 @@ under: |
 generic object: ALDocumentBundle
 template: x.send_email_template
 subject: |
-  Letter to stop wage assignment
+  Notices to stop wage assignment
 content: |
   Your forms are attached.
   
@@ -465,9 +475,9 @@ attachment:
   docx template file: Stop_wage_assignment_instructions.docx
 ---
 objects:
-  - creditor_notice: ALDocument.using(title="Notice to creditor", filename="creditor_notice", enabled=True, has_addendum=False)
+  - creditor_notice: ALDocument.using(title="Revocation Notice", filename="creditor_notice", enabled=True, has_addendum=False)
   - instructions: ALDocument.using(title="Instructions", filename="instructions", enabled=True, has_addendum=False)
-  - employer_notice: ALDocument.using(title="Notice to employer", filename="employer_notice", enabled=True, has_addendum=False)
+  - employer_notice: ALDocument.using(title="Employer Notice", filename="employer_notice", enabled=True, has_addendum=False)
 ---
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[instructions, creditor_notice, employer_notice], filename="stop_wage_assignment.pdf", title="Download all forms")
