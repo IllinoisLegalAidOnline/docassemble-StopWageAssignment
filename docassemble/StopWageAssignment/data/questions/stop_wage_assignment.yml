@@ -243,7 +243,7 @@ fields:
 ---
 id: include phone
 question: |
-  Do you want to include your phone number in your notices?
+  Do you want to include your phone number on your notices?
 fields:
   - no label: include_phone_number
     datatype: yesnoradio
@@ -257,7 +257,7 @@ fields:
 ---
 id: include email
 question: |
-  Do you want to include your email address in your notices?
+  Do you want to include your email address on your notices?
 fields:
   - no label: include_email_address
     datatype: yesnoradio
