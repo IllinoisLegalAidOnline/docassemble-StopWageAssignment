@@ -18,9 +18,6 @@ objects:
   - employer: ALIndividual
   - contact: ALIndividual
 ---
-sections:
-  - review_answers: Review your answers
----
 # Road map
 sections:
   - section_intro: Start
@@ -43,7 +40,7 @@ code: |
   get_legal_help 
   if in_illinois == False:
     out_of_state
-  if included_debt == False:
+  if invalid_debt:
     no_assignment
   set_progress(20)
   nav.set_section('section_creditor')
@@ -85,13 +82,12 @@ subquestion: |
 
   This program makes notices for a creditor and your employer to stop a creditor from taking money out of your paycheck. This will end a **{wage assignment}**.
   
-  Learn about [**how wage assignments work**](https://www.illinoislegalaid.org/legal-information/understanding-wage-assignment).
+  To learn more, read ILAO's article about [**how wage assignments work**](https://www.illinoislegalaid.org/legal-information/understanding-wage-assignment).
 field: sees_nav_bar
+---
 terms:
-  phrases:
-      - 'wage assignment'
-  definition: |
-    An agreement between you and a creditor that allows the creditor to take money from your paycheck to cover your debt.
+  - "wage assignment": |
+      An agreement between you and a creditor that allows the creditor to take money from your paycheck to cover your debt.
 ---
 id: instructions
 continue button field: how_to_use
@@ -125,16 +121,17 @@ continue button field: whats_next
 question: |
   Stopping a wage assignment
 subquestion: |
-  To stop a wage assignment, you need to tell your creditor that you are revoking it. You also need to tell your employer.
+  To stop a **{wage assignment}**, you need to tell your creditor that you are revoking it. You also need to tell your employer.
   
   This program will make two notices:
   
   * A Revocation Notice telling your creditor you want to stop the wage assignment, and
   * An Employer Notice that tells your employer to stop paying your creditor directly from your paycheck.
-  
-  After you download your notices, you must deliver the Revocation Notice to your creditor and both notices to your employer.
 
-  To learn more, download and read the instructions at the end of this program.
+  After you download your notices, you must deliver the Revocation Notice to your creditor and both notices to your employer. See the instructions you can download at the end of this program for more information.
+  
+  ${ collapse_template(explain_assignment) }  
+  
 ---
 id: accept terms
 question: |
@@ -147,15 +144,15 @@ subquestion: |
   ${ collapse_template(get_legal_help) }  
 
 fields:
-  - To continue, you must accept the [**terms of use**](https://www.illinoislegalaid.org/about/terms-of-use).: accept
+  - To continue, you must accept the [**terms of use**](https://www.illinoislegalaid.org/about/terms-of-use) and [**privacy policy**](https://www.illinoislegalaid.org/about/privacy-policy).: accept
     datatype: checkboxes
     none of the above: False
     minlength: 1
     choices:
-      - I accept the terms of use.
+      - I accept the terms of use and privacy policy.
     validation messages:
       minlength: |
-        You cannot continue unless you agree to the terms of use.
+        You cannot continue unless you agree to the terms of use and privacy policy.
 continue button field: accept_terms
 ---
 template: get_legal_help
@@ -196,24 +193,22 @@ buttons:
 ---
 id: assignment
 question: |
-  Do you have a wage assignment for a debt other than child support, federal student loans, or taxes?
+  Do you have a wage assignment for child support, federal student loans, or taxes?
 subquestion: | 
-  Child support, federal student loans, and taxes are treated differently than other wage assignments. You may want to discuss your issue with a lawyer. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
-  
-  ${ collapse_template(explain_assignment) }  
+  A **{wage assignment}** for child support, federal student loans, and taxes is treated differently than other wage assignments. If so, you may want to discuss it with a lawyer. Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
 fields:
-  - no label: included_debt
+  - no label: invalid_debt
     datatype: yesnoradio
 ---
 template: explain_assignment
 subject: |
-  **What is a wage assignment?**
+  **Tell me more about wage assignments**
 content: |
   A wage assignment is a document you sign when you take out a loan. It gives the lender permission to take money from your wages if you don't pay.
   
   Usually, a creditor has to go to court to take part of your wages. This is called wage garnishment. However, with a wage assignment, a creditor can take your wages without going to court.
   
-  Learn more about [**how wage assignments work**](https://www.illinoislegalaid.org/legal-information/understanding-wage-assignment).
+  To learn more, read ILAO's article about [**how wage assignments work**](https://www.illinoislegalaid.org/legal-information/understanding-wage-assignment).
 ---
 id: no wage assignment
 event: no_assignment
