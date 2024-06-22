@@ -33,6 +33,7 @@ code: |
   ilao_easy_form_url = "https://www.illinoislegalaid.org/legal-information/stop-wage-assignment-letter"
   nav.set_section('section_intro')
   sees_nav_bar
+  snapshot_start
   set_progress(5)
   how_to_use
   accept_terms
@@ -72,7 +73,34 @@ code: |
     user.signature
   set_progress(100)
   nav.set_section('section_download')
+  forms_assembling
+  snapshot_forms
   get_docs_screen 
+---
+code: |
+  stuff_to_snapshot = {
+  	'start_time': str(current_datetime().format_datetime()),
+  	'started_interview': True, 
+  	}
+    
+  stuff_to_snapshot['user_zip'] = showifdef('user.address.zip')
+
+  stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
+  
+  stuff_to_snapshot['know_who_is_in_charge_of_payroll'] = showifdef('payroll_known') 
+  
+  store_variables_snapshot(
+  	data=stuff_to_snapshot, persistent=True
+  	)
+  snapshot_interview_state = True
+---
+code: |
+  snapshot_interview_state
+  snapshot_start = True  
+---
+code: |
+  reconsider('snapshot_interview_state')
+  snapshot_forms = True
 ---
 id: welcome
 question: |
@@ -408,6 +436,17 @@ signature: user.signature
 under: |
   ${ user.name.full(middle='full') }
 ---
+id: forms assembling
+continue button field: forms_assembling
+question: |
+  Almost done
+subquestion: |
+  After you click **Next**, it may take a few moments to finish making your forms.
+  
+  ###### You do not need to refresh your screen. Hang in there!
+  
+  [NEWLINE]
+---
 id: get docs screen
 event: get_docs_screen
 question: |
@@ -571,7 +610,7 @@ review:
       ${ user.signature }
     show if: add_signature
 ---
-id: section_creditor
+id: creditor review screen
 event: section_creditor
 question: |
   Creditor
@@ -599,7 +638,7 @@ review:
       **The date you will mail the Revocation Notice to your creditor:**
       ${creditor.mail_date}
 ---
-id: section_employer
+id: employer review screen
 event: section_employer
 question: |
   Employer
@@ -637,7 +676,7 @@ review:
       **The date you will mail the notices to your employer:**
       ${employer.mail_date}
 ---
-id: section_user
+id: user review screen
 event: section_user
 question: |
   User
