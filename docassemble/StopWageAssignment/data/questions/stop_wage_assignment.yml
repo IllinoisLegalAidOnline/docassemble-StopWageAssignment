@@ -137,13 +137,13 @@ subquestion: |
   
   ${ collapse_template(help_example) }  
 
-  Click on **{green words}** to learn what they mean. Some questions have a question mark in a circle ${ fa_icon("question-circle", color_css="#0DCAF0" ) } that also gives help.
+  Click on **{green words}** to learn what they mean. Some pages have a question mark in a circle ${ fa_icon("question-circle", color_css="#0DCAF0" ) } that helps explain things.
 ---
 template: help_example
 
 subject: |
 
-  **You can expand sections like this to show more information.**
+  **You can click sections like this to show more information.**
 
 content: |  
 
@@ -196,14 +196,29 @@ content: |
  
   Use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
 ---
-id: your name
+id: user name
 question: |
   What is your name?
+subquestion: |
+    If you don't have a first name and a last name, you can enter your name in the field labeled **First** and leave the other fields blank.
 fields:
   - First: user.name.first
   - Middle: user.name.middle
     required: False
   - Last: user.name.last
+    required: False
+  - Suffix: user.name.suffix
+    help: |
+      Some names have a suffix after the last name, such as "Senior," "III," or "Jr." If your name does not have a suffix, you can leave this blank.
+    code: |
+      name_suffix()
+    required: False
+---
+template: long_name_help
+subject: |
+  **What if I need more space?**
+content: |
+  If the person has a long name like "Jane Smith, Loan Officer," select **Business or organization**. You can then enter the full name and title.
 ---
 id: live in illinois
 question: |
@@ -302,6 +317,8 @@ sets:
 id: creditor name
 question: |
   What is the name of the creditor?
+subquestion: |
+  ${collapse_template(long_name_help)}
 fields:
   - code: |
       creditor.name_fields(person_or_business='unsure')
@@ -363,6 +380,8 @@ subquestion: |
   * A copy of the Revocation Notice should be sent to your employer to make sure they know that you are revoking your wage assignment, and
   
   * Your creditor needs your employer's information so they know who to contact regarding the revocation of your wage assignment.
+
+  ${collapse_template(long_name_help)}
 fields: 
   - code: |
       employer.name_fields(person_or_business='unsure')
@@ -404,11 +423,20 @@ question: |
   % else:
   What is the name of your supervisor at ${employer.name.full(middle='full')}?
   % endif
+subquestion: |
+    If they don't have a first name and a last name, you can enter their name in the field labeled **First** and leave the other fields blank.
 fields:
   - First: contact.name.first
   - Middle: contact.name.middle
     required: False
   - Last: contact.name.last
+    required: False
+  - Suffix: contact.name.suffix
+    help: |
+      Some names have a suffix after the last name, such as "Senior," "III," or "Jr." If your name does not have a suffix, you can leave this blank.
+    code: |
+      name_suffix()
+    required: False
 ---
 id: employer mail date
 question: |
