@@ -325,7 +325,7 @@ fields:
 ---
 id: creditor address
 question: |
-  What is ${creditor.name.full(middle="full")}'s mailing address?
+  What is ${creditor.name_full()}'s mailing address?
 subquestion: |
   The creditor’s address should be listed on the wage assignment. If not, look for their address on another notice or bill they sent you.
 fields:
@@ -341,7 +341,7 @@ fields:
 ---
 id: creditor account
 question: |
-  What is your account number with ${creditor.name.full(middle="full")}?
+  What is your account number with ${creditor.name_full()}?
 subquestion: |
   Your account number or other account reference is usually listed on bills you receive for the account.
 fields:
@@ -349,9 +349,9 @@ fields:
 ---
 id: assignment date
 question: |
-  When did you sign your wage assignment with ${creditor.name.full(middle="full")}?
+  When did you sign your wage assignment with ${creditor.name_full()}?
 subquestion: |
-  This date should be on your copy of the wage assignment. If you do not have a copy, you should request a copy from ${creditor.name.full(middle="full")}. 
+  This date should be on your copy of the wage assignment. If you do not have a copy, you should request a copy from ${creditor.name_full()}. 
   
   Wage assignments can be part of a rental contract, a loan agreement, or a sales contract with payment by installments. Read any contract you have with the creditor carefully.
 fields:
@@ -361,7 +361,7 @@ fields:
 ---
 id: creditor mail date
 question: |
-  When will you mail your notice to ${creditor.name.full(middle="full")}?
+  When will you mail your notice to ${creditor.name_full()}?
 subquestion: |
   This date will appear on your Revocation Notice.
 fields:
@@ -388,7 +388,7 @@ fields:
 ---
 id: employer address
 question: |
-  What is ${employer.name.full(middle="full")}'s address?
+  What is ${employer.name_full()}'s address?
 fields:
   - Street address: employer.address.address
     address autocomplete: True
@@ -402,7 +402,7 @@ fields:
 ---
 id: payroll check
 question: |
-  Do you know who is in charge of payroll at ${employer.name.full(middle='full')}?
+  Do you know who is in charge of payroll at ${employer.name_full()}?
 subquestion: |
   This could be the Office Manager or someone from the Human Resources department.
 fields:
@@ -411,7 +411,7 @@ fields:
 ---
 id: supervisor known
 question: |
-  Do you know the name of your supervisor at ${employer.name.full(middle='full')}?
+  Do you know the name of your supervisor at ${employer.name_full()}?
 fields:
   - no label: supervisor_known
     datatype: yesnoradio
@@ -419,9 +419,9 @@ fields:
 id: contact person
 question: |
   % if payroll_known == True:
-  What is the name of the person in charge of payroll at ${employer.name.full(middle='full')}?
+  What is the name of the person in charge of payroll at ${employer.name_full()}?
   % else:
-  What is the name of your supervisor at ${employer.name.full(middle='full')}?
+  What is the name of your supervisor at ${employer.name_full()}?
   % endif
 subquestion: |
     If they don't have a first name and a last name, you can enter their name in the field labeled **First** and leave the other fields blank.
@@ -440,11 +440,11 @@ fields:
 ---
 id: employer mail date
 question: |
-  When will you mail your Employer Notice to ${employer.name.full(middle="full")}?
+  When will you mail your Employer Notice to ${employer.name_full()}?
 subquestion: |
   This date will appear on your notice.
   
-  You said you would mail your Revocation Notice to ${employer.name.full(middle="full")} on ${creditor.mail_date}.
+  You said you would mail your Revocation Notice to ${employer.name_full()} on ${creditor.mail_date}.
 fields:
   - Date: employer.mail_date
     datatype: date
@@ -467,7 +467,7 @@ subquestion: |
   Use the mouse or touchpad on your computer or sign with your finger on your phone.
 signature: user.signature
 under: |
-  ${ user.name.full(middle='full') }
+  ${ user.name_full() }
 ---
 id: forms assembling
 continue button field: forms_assembling
@@ -559,7 +559,7 @@ review:
   - Edit: creditor.name.first
     button: |
       **Creditor's name:**
-      ${creditor.name.full(middle='full')}
+      ${creditor.name_full()}
   - Edit: creditor.address.address
     button: |
       **Creditor's address:**
@@ -579,18 +579,18 @@ review:
   - Edit: employer.name.first
     button: |
       **Your employer's name:**
-      ${employer.name.full(middle="full")}
+      ${employer.name_full()}
   - Edit: employer.address.address
     button: |
       **Your employer's address:**
       ${employer.address.on_one_line(bare=True)}
   - Edit: payroll_known
     button: |
-      **Do you know who is in charge of payroll at ${employer.name.full(middle="full")}?**
+      **Do you know who is in charge of payroll at ${employer.name_full()}?**
       ${word(yesno(payroll_known))}
   - Edit: supervisor_known
     button: |
-      **Do you know the name of your supervisor at ${employer.name.full(middle="full")}?**
+      **Do you know the name of your supervisor at ${employer.name_full()}?**
       ${word(yesno(supervisor_known))}
     show if: payroll_known == False
   - Edit: contact.name.first
@@ -600,7 +600,7 @@ review:
       % else:
       **Your supervisor's name:**
       % endif
-      ${contact.name.full(middle='full')}
+      ${contact.name_full()}
     show if: payroll_known == True or supervisor_known == True
   - Edit: employer.mail_date
     button: |
@@ -609,7 +609,7 @@ review:
   - Edit: user.name.first
     button: |
       **Your name:**
-      ${user.name.full(middle="full")}
+      ${user.name_full()}
   - Edit: user.address.address
     button: |
       **Your address:**
@@ -653,7 +653,7 @@ review:
   - Edit: creditor.name.first
     button: |
       **Creditor's name:**
-      ${creditor.name.full(middle='full')}
+      ${creditor.name_full()}
   - Edit: creditor.address.address
     button: |
       **Creditor's address:**
@@ -681,18 +681,18 @@ review:
   - Edit: employer.name.first
     button: |
       **Your employer's name:**
-      ${employer.name.full(middle="full")}
+      ${employer.name_full()}
   - Edit: employer.address.address
     button: |
       **Your employer's address:**
       ${employer.address.on_one_line(bare=True)}
   - Edit: payroll_known
     button: |
-      **Do you know who is in charge of payroll at ${employer.name.full(middle="full")}?**
+      **Do you know who is in charge of payroll at ${employer.name_full()}?**
       ${word(yesno(payroll_known))}
   - Edit: supervisor_known
     button: |
-      **Do you know the name of your supervisor at ${employer.name.full(middle="full")}?**
+      **Do you know the name of your supervisor at ${employer.name_full()}?**
       ${word(yesno(supervisor_known))}
     show if: payroll_known == False
   - Edit: contact.name.first
@@ -702,7 +702,7 @@ review:
       % else:
       **Your supervisor's name:**
       % endif
-      ${contact.name.full(middle='full')}
+      ${contact.name_full()}
     show if: payroll_known == True or supervisor_known == True
   - Edit: employer.mail_date
     button: |
@@ -719,7 +719,7 @@ review:
   - Edit: user.name.first
     button: |
       **Your name:**
-      ${user.name.full(middle="full")}
+      ${user.name_full()}
   - Edit: user.address.address
     button: |
       **Your address:**
